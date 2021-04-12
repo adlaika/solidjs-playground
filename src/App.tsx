@@ -1,23 +1,30 @@
-import logo from './logo.svg';
 import './App.css';
+import {createSignal} from "solid-js";
+import {DOMElement} from "solid-js/jsx-runtime";
 
 function App() {
+  const [getTodos, setTodos] = createSignal([])
+
+  const addTodo = (s: string) => setTodos([s, ...getTodos()])
+
+  const handleSubmit = (e: Event & { submitter: HTMLElement } & { currentTarget: HTMLFormElement; target: DOMElement }) => {
+    const target: any = e.target as HTMLInputElement
+    addTodo(target.elements.todoInput.value)
+    e.preventDefault()
+  }
+
   return (
-    <div class="App">
-      <header class="App-header">
-        <img src={logo} class="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          class="App-link"
-          href="https://github.com/ryansolid/solid"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn Solid
-        </a>
-      </header>
+    <div class="App" id="container">
+      <form id="todo-add-bar" onSubmit={handleSubmit}>
+        <input type="submit">Add Todo</input>
+        <input type="text"
+               name="todoInput"
+               placeholder="enter todo here!"
+        />
+      </form>
+      <ul>
+        {getTodos().map(todo => <li>{todo}</li>)}
+      </ul>
     </div>
   );
 }
